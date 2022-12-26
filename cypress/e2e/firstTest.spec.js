@@ -35,7 +35,7 @@ describe("Our first suite", () => {
     cy.get('[data-cy="imputEmail1"]');
   });
 
-  it.only("second test", () => {
+  it("second test", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Form Layouts").click();
@@ -55,5 +55,48 @@ describe("Our first suite", () => {
       .click();
 
     cy.contains("nb-card", "Horizontal form").find('[type="email"]');
+  });
+
+  /* What are we doing here? */
+  it.only("then and wrap methods", () => {
+    cy.visit("/");
+    cy.contains("Forms").click();
+    cy.contains("Form Layouts").click();
+
+    // Instead of doing this:
+    // cy.contains("nb-card", "Using the Grid")
+    //   .find('[for="inputEmail1"]')
+    //   .should("contain", "Email");
+
+    // cy.contains("nb-card", "Using the Grid")
+    //   .find('[for="inputPassword2"]')
+    //   .should("contain", "Password");
+
+    // cy.contains("nb-card", "Basic form")
+    //   .find('[for="exampleInputEmail1"]')
+    //   .should("contain", "Email");
+
+    // cy.contains("nb-card", "Basic form")
+    //   .find('[for="exampleInputPassword1"]')
+    //   .should("contain", "Password");
+
+    // You can do this:
+    const firstForm = cy
+      .contains("nb-card", "Using the Grid")
+      .then((firstForm) => {
+        const emailLabelFirst = firstForm.find('[for="inputEmail1"]').text();
+        const passwordLabelFirst = firstForm
+          .find('[for="inputPassword2"]')
+          .text();
+
+        expect(emailLabelFirst).to.equal("Email");
+        expect(passwordLabelFirst).to.equal("Password");
+
+        // or
+
+        cy.wrap(firstForm)
+          .find('[for="inputEmail1"]')
+          .should("contain", "Email");
+      });
   });
 });
