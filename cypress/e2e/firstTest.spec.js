@@ -101,7 +101,7 @@ describe("Our first suite", () => {
   });
 
   /**  Explain how to the invoke command does in this example */
-  it.only("invoke command", () => {
+  it("invoke command", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Form Layouts").click();
@@ -130,7 +130,7 @@ describe("Our first suite", () => {
   });
 
   // Another example
-  it.only("assert property", () => {
+  it("assert property", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Datepicker").click();
@@ -142,5 +142,39 @@ describe("Our first suite", () => {
         cy.get("nb-calendar-day-cell").contains("17").click();
         cy.wrap(input).invoke("prop", "value").should("equal", "Dec 17, 2022");
       });
+  });
+
+  // Explain what we're doing here to interact with radio buttons
+  it.only("radio button", () => {
+    cy.visit("/");
+    cy.contains("Forms").click();
+    cy.contains("Form Layouts").click();
+
+    cy.contains("nb-card", "Using the Grid")
+      .find('[type="radio"]')
+      .then((radioButtons) => {
+        cy.wrap(radioButtons)
+          .first()
+          .check({ force: true })
+          .should("be.checked");
+
+        cy.wrap(radioButtons).eq(1).check({ force: true }).should("be.checked");
+
+        cy.wrap(radioButtons).first().should("not.be.checked");
+
+        cy.wrap(radioButtons).eq(2).should("be.disabled");
+      });
+  });
+
+  // And here to interact with checkboxes
+  it.only("check boxes", () => {
+    cy.visit("/");
+    cy.contains("Modal & Overlays").click();
+    cy.contains("Toastr").click();
+
+    cy.get('[type="checkbox"]').check({ force: true });
+
+    cy.get('[type="checkbox"]').first().click({ force: true });
+    cy.get('[type="checkbox"]').first().check({ force: true });
   });
 });
