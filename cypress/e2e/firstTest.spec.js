@@ -145,7 +145,7 @@ describe("Our first suite", () => {
   });
 
   // Explain what we're doing here to interact with radio buttons
-  it.only("radio button", () => {
+  it("radio button", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Form Layouts").click();
@@ -167,7 +167,7 @@ describe("Our first suite", () => {
   });
 
   // And here to interact with checkboxes
-  it.only("check boxes", () => {
+  it("check boxes", () => {
     cy.visit("/");
     cy.contains("Modal & Overlays").click();
     cy.contains("Toastr").click();
@@ -176,5 +176,28 @@ describe("Our first suite", () => {
 
     cy.get('[type="checkbox"]').first().click({ force: true });
     cy.get('[type="checkbox"]').first().check({ force: true });
+  });
+
+  it.only("list and dropdowns", () => {
+    cy.visit("/");
+    cy.get("nav nb-select").click();
+    cy.get(".options-list").contains("Dark").click();
+    cy.get("nav nb-select").should("contain", "Dark");
+    cy.get("nb-layout-header nav").should(
+      "have.css",
+      "background-color",
+      "rgb(34, 43, 69)"
+    );
+
+    cy.get("nav nb-select").then((dropdown) => {
+      cy.wrap(dropdown).click();
+      cy.get(".options-list nb-option").each((listItem) => {
+        const itemText = listItem.text().trim();
+
+        cy.wrap(listItem).click();
+        cy.wrap(dropdown).should("contain", itemText);
+        cy.wrap(dropdown).click();
+      });
+    });
   });
 });
