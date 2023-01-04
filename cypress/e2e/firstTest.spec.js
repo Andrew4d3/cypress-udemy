@@ -178,7 +178,7 @@ describe("Our first suite", () => {
     cy.get('[type="checkbox"]').first().check({ force: true });
   });
 
-  it.only("list and dropdowns", () => {
+  it("list and dropdowns", () => {
     cy.visit("/");
     cy.get("nav nb-select").click();
     cy.get(".options-list").contains("Dark").click();
@@ -198,6 +198,50 @@ describe("Our first suite", () => {
         cy.wrap(dropdown).should("contain", itemText);
         cy.wrap(dropdown).click();
       });
+    });
+  });
+
+  it.only("web tables", () => {
+    cy.visit("/");
+    cy.contains("Tables & Data").click();
+    cy.contains("Smart Table").click();
+
+    cy.get("tbody")
+      .contains("tr", "Larry")
+      .then((tableRow) => {
+        cy.wrap(tableRow).find(".nb-edit").click();
+        cy.wrap(tableRow).find('[placeholder="Age"]').clear().type("25");
+        cy.wrap(tableRow).find(".nb-checkmark").click();
+        cy.wrap(tableRow).find("td").eq(6).should("contain", "25");
+      });
+
+    cy.get("thead").find(".nb-plus").click();
+    cy.get("thead")
+      .find("tr")
+      .eq(2)
+      .then((tableRow) => {
+        cy.wrap(tableRow).find('[placeholder="First Name"]').type("Andrew");
+        cy.wrap(tableRow).find('[placeholder="Last Name"]').type("Davis");
+        cy.wrap(tableRow).find('[placeholder="Username"]').type("andrew4d3");
+        cy.wrap(tableRow)
+          .find('[placeholder="E-mail"]')
+          .type("andrew4d3@test.com");
+
+        cy.wrap(tableRow).find('[placeholder="Age"]').type("35");
+        cy.wrap(tableRow).find(".nb-checkmark").click();
+      });
+
+    cy.get("tbody")
+      .contains("tr", "Andrew")
+      .then((tableRow) => {
+        cy.wrap(tableRow).find("td").eq(2).should("contain", "Andrew");
+        cy.wrap(tableRow).find("td").eq(3).should("contain", "Davis");
+      });
+
+    cy.get('thead [placeholder="Age"]').type("20");
+    cy.wait(250);
+    cy.get("tbody tr").each((tableRow) => {
+      cy.wrap(tableRow).find("td").eq(6).should("contain", "20");
     });
   });
 });
