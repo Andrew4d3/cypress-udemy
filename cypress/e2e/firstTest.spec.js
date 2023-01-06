@@ -130,17 +130,34 @@ describe("Our first suite", () => {
   });
 
   // Another example
-  it("assert property", () => {
+  it.only("assert property", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Datepicker").click();
+
+    const date = new Date();
+    date.setDate(date.getDate() + 5);
+    const futureDay = date.getDate();
+    const futureMonth = date.toLocaleString("default", { month: "short" });
+    const dateAssert = `${futureMonth} ${futureDay}, ${date.getFullYear()}`;
 
     cy.contains("nb-card", "Common Datepicker")
       .find("input")
       .then((input) => {
         cy.wrap(input).click();
-        cy.get("nb-calendar-day-cell").contains("17").click();
-        cy.wrap(input).invoke("prop", "value").should("equal", "Dec 17, 2022");
+
+        cy.get("nb-calendar-navigation")
+          .invoke("attr", "ng-reflect-date")
+          .then((dateAttr) => {
+            if (!dateAttr.includes(futureMonth)) {
+              cy.get('[data-name="chevron-right"]').click();
+              cy.get("nb-calendar-picker").contains(futureDay).click();
+            } else {
+              cy.get("nb-calendar-picker").contains(futureDay).click();
+            }
+          });
+
+        cy.wrap(input).invoke("prop", "value").should("equal", dateAssert);
       });
   });
 
@@ -201,7 +218,7 @@ describe("Our first suite", () => {
     });
   });
 
-  it.only("web tables", () => {
+  it("web tables", () => {
     cy.visit("/");
     cy.contains("Tables & Data").click();
     cy.contains("Smart Table").click();
