@@ -130,7 +130,7 @@ describe("Our first suite", () => {
   });
 
   // Another example
-  it.only("assert property", () => {
+  it("assert property", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Datepicker").click();
@@ -260,5 +260,47 @@ describe("Our first suite", () => {
     cy.get("tbody tr").each((tableRow) => {
       cy.wrap(tableRow).find("td").eq(6).should("contain", "20");
     });
+  });
+
+  it.only("tooltip", () => {
+    cy.visit("/");
+    cy.contains("Modal & Overlays").click();
+    cy.contains("Tooltip").click();
+
+    cy.contains("nb-card", "Colored Tooltips")
+      .contains("Default")
+      .trigger("mouseenter");
+
+    cy.get("nb-tooltip").should("contain", "This is a tooltip");
+  });
+
+  it.only("browser dialog box 1", () => {
+    cy.visit("/");
+    cy.contains("Tables & Data").click();
+    cy.contains("Smart Table").click();
+    // Dialog confirms automatically
+    cy.get(".nb-trash").first().click();
+
+    // We can assert messge by using stubs
+    const stub = cy.stub();
+    cy.on("window:confirm", stub);
+    cy.get(".nb-trash")
+      .first()
+      .click()
+      .then(() => {
+        expect(stub.getCall(0)).to.be.calledWith(
+          "Are you sure you want to delete?"
+        );
+      });
+  });
+
+  it.only("browser dialog box 2", () => {
+    cy.visit("/");
+    cy.contains("Tables & Data").click();
+    cy.contains("Smart Table").click();
+
+    // If we want to cancel dialog...
+    cy.get(".nb-trash").first().click();
+    cy.on("window:confirm", () => false); // This overwrite previous stubs
   });
 });
