@@ -101,17 +101,22 @@ describe("Our first suite", () => {
   });
 
   /**  Explain how to the invoke command does in this example */
-  it("invoke command", () => {
+  it.only("invoke command", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Form Layouts").click();
 
     //1
-    cy.get('[for="exampleInputEmail1"]').should("contain", "Email address");
+    cy.get('[for="exampleInputEmail1"]')
+      .should("contain", "Email address")
+      .should("have.class", "label")
+      .and("have.text", "Email address");
 
     //2 (using then)
     cy.get('[for="exampleInputEmail1"]').then((label) => {
       expect(label.text()).to.equal("Email address");
+      expect(label).to.have.class("label");
+      expect(label).to.have.text("Email address");
     });
 
     //3 (using invoke)
@@ -262,7 +267,7 @@ describe("Our first suite", () => {
     });
   });
 
-  it.only("tooltip", () => {
+  it("tooltip", () => {
     cy.visit("/");
     cy.contains("Modal & Overlays").click();
     cy.contains("Tooltip").click();
@@ -274,7 +279,7 @@ describe("Our first suite", () => {
     cy.get("nb-tooltip").should("contain", "This is a tooltip");
   });
 
-  it.only("browser dialog box 1", () => {
+  it("browser dialog box 1", () => {
     cy.visit("/");
     cy.contains("Tables & Data").click();
     cy.contains("Smart Table").click();
@@ -294,7 +299,7 @@ describe("Our first suite", () => {
       });
   });
 
-  it.only("browser dialog box 2", () => {
+  it("browser dialog box 2", () => {
     cy.visit("/");
     cy.contains("Tables & Data").click();
     cy.contains("Smart Table").click();
