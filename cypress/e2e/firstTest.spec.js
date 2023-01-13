@@ -101,7 +101,7 @@ describe("Our first suite", () => {
   });
 
   /**  Explain how to the invoke command does in this example */
-  it.only("invoke command", () => {
+  it("invoke command", () => {
     cy.visit("/");
     cy.contains("Forms").click();
     cy.contains("Form Layouts").click();
